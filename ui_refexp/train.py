@@ -229,7 +229,9 @@ def run_training():
 
 if __name__ == "__main__":
     # printing environment variables
-    print(os.environ)
+    print("OS environment variables:")
+    for k, v in os.environ.items():
+        print(f'{k}={v}')
 
     # Initialize command line arg parser
     parser = argparse.ArgumentParser(description='Trainer for Donut UI RefExp task.',
