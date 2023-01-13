@@ -3,7 +3,6 @@ import re
 import numpy as np
 import math
 
-from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
 from torch.optim.lr_scheduler import LambdaLR
 from ui_refexp.iou import get_iou
