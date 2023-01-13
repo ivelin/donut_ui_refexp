@@ -209,8 +209,9 @@ def run_training():
     wandb_logger = WandbLogger(project="Donut-RefExp")
     # initialize trainer
     trainer = pl.Trainer(
-        accelerator=args.accelerator,
-        devices=args.devices,
+        tpu_cores=[0],
+        # accelerator=args.accelerator,
+        # devices=args.devices,
         max_epochs=config.get("max_epochs"),
         val_check_interval=config.get("val_check_interval"),
         check_val_every_n_epoch=config.get("check_val_every_n_epoch"),
