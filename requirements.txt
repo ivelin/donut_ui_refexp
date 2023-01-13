@@ -2,7 +2,7 @@ git+https://github.com/huggingface/transformers.git
 datasets
 sentencepiece
 pytorch-lightning
-wandb
 Pillow
 torch
 torch_xla[tpuvm]
+wandb

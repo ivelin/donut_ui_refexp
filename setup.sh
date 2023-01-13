@@ -21,7 +21,12 @@ virtualenv -p python3.8 .
 source ./bin/activate
 pip install -r requirements.txt
 
+# For GCP TPU XLA lib support
+# wget -qO - https://apt.repos.neuron.amazonaws.com/GPG-PUB-KEY-AMAZON-AWS-NEURON.PUB | sudo apt-key add -
+
+
+
 git pull
 git config --global credential.helper "cache --timeout=3600"
-wandb login
-huggingface-cli login
+python3 -m wandb login
+python3 -m huggingface-cli login
