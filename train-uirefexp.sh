@@ -22,4 +22,4 @@ pip install -r requirements.txt
 wandb login
 huggingface-cli login
 
-python -m ui_refexp/train.py
+python -m ui_refexp.train
