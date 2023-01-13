@@ -1,0 +1,5 @@
+git+https://github.com/huggingface/transformers.git
+datasets
+sentencepiece
+pytorch-lightning
+wandb
