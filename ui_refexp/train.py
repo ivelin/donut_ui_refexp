@@ -206,7 +206,7 @@ def run_training():
               "verbose": True,
               }
     model_module = DonutModelPLModule(
-        config=config, processor=processor, model=model, train_dataset=train_dataset, val_dataset=val_dataset)
+        config=config, processor=processor, model=model)
     wandb_logger = WandbLogger(project="Donut-RefExp")
     # initialize trainer
     trainer = pl.Trainer(
