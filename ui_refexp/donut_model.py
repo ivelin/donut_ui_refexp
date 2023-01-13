@@ -17,6 +17,11 @@ from pytorch_lightning.utilities import rank_zero_only
 class DonutModelPLModule(pl.LightningModule):
     def __init__(self, config=None, processor=None, model=None, train_dataloader=None, val_dataloader=None):
         super().__init__()
+        assert config is not None
+        assert processor is not None
+        assert model is not None
+        assert train_dataloader is not None
+        assert val_dataloader is not None
         self.config = config
         self.processor = processor
         self.model = model
