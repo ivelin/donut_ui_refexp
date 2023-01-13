@@ -7,5 +7,6 @@ Pillow
 torch
 torch-neuron==1.11.0.2.3.0.0
 neuron-cc[tensorflow]
-"protobuf<4"==1.11.4.0 torchvision
+"protobuf<4"==1.11.4.0
+torchvision
 torch_xla[tpuvm]
