@@ -2,7 +2,6 @@ import argparse
 from transformers import DonutProcessor, VisionEncoderDecoderModel
 from pytorch_lightning.loggers import WandbLogger
 import wandb
-from torch.utils.data import DataLoader
 from typing import List
 from transformers import DonutProcessor, VisionEncoderDecoderModel, BartConfig
 from transformers import VisionEncoderDecoderConfig

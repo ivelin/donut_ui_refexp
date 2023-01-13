@@ -3,6 +3,7 @@ import re
 import numpy as np
 import math
 
+from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
 from torch.optim.lr_scheduler import LambdaLR
 from ui_refexp.iou import get_iou
@@ -24,6 +25,7 @@ def verify_batch(processor=None, batch=None):
                   processor.decode([label]))
         else:
             print(processor.decode([decoder_input_id]), label)
+
 
 class DonutModelPLModule(pl.LightningModule):
     def __init__(self, config=None, processor=None, model=None, train_dataset=None, val_dataset=None):
