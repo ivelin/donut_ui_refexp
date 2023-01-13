@@ -28,18 +28,14 @@ def verify_batch(processor=None, batch=None):
 
 
 class DonutModelPLModule(pl.LightningModule):
-    def __init__(self, config=None, processor=None, model=None, train_dataset=None, val_dataset=None):
+    def __init__(self, config=None, processor=None, model=None):
         super().__init__()
         assert config is not None
         assert processor is not None
         assert model is not None
-        assert train_dataset is not None
-        assert val_dataset is not None
         self.config = config
         self.processor = processor
         self.model = model
-        self.train_dataset = train_dataset
-        self.val_dataset = val_dataset
 
     def training_step(self, batch, batch_idx):
         pixel_values, decoder_input_ids, labels = batch
@@ -153,17 +149,3 @@ class DonutModelPLModule(pl.LightningModule):
                 self.parameters(), lr=self.config.get("lr"))
 
             return optimizer
-
-        def train_dataloader(self):
-            # create corresponding PyTorch dataloaders
-            train_dataloader = DataLoader(
-                self.train_dataset, batch_size=1, shuffle=True, num_workers=4)
-            # Let's verify a batch:
-            batch = next(iter(self.train_dataloader))
-            verify_batch(processor=processor, batch=batch)
-            return train_dataloader
-
-        def val_dataloader(self):
-            val_dataloader = DataLoader(
-                self.val_dataset, batch_size=1, shuffle=False, num_workers=4)
-            return val_dataloader

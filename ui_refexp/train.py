@@ -176,6 +176,16 @@ def run_training():
     print(f"train dataset length: {train_dataset.dataset_length}")
     print(f"validation dataset length: {val_dataset.dataset_length}")
 
+    # create corresponding PyTorch dataloaders
+    train_dataloader = DataLoader(
+        train_dataset, batch_size=1, shuffle=True, num_workers=4)
+    # Let's verify a batch:
+    batch = next(iter(train_dataloader))
+    verify_batch(processor=processor, batch=batch)
+
+    val_dataloader = DataLoader(
+        val_dataset, batch_size=1, shuffle=False, num_workers=4)
+
     # clear any previously open wandb logging session
     wandb.finish()
 
@@ -210,8 +220,10 @@ def run_training():
         logger=wandb_logger,
         # callbacks=[lr_callback, checkpoint_callback],
     )
+
     # run training
-    trainer.fit(model_module)
+    trainer.fit(model_module, train_dataloaders=train_dataloader,
+                val_dataloader=val_dataloader)
 
     # push checkpoint to Hugging Face Hub
     # uncomment when training works on TPU
