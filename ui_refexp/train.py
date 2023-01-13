@@ -224,7 +224,7 @@ def run_training():
 
     # run training
     trainer.fit(model_module, train_dataloaders=train_dataloader,
-                val_dataloader=val_dataloader)
+                val_dataloaders=val_dataloader)
 
     # push checkpoint to Hugging Face Hub
     # uncomment when training works on TPU

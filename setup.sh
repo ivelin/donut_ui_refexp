@@ -19,8 +19,8 @@ set -x
 
 virtualenv -p python3.8 venv
 source ./bin/activate
-pip config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
-pip install -r requirements.txt
+pip3 config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
+pip3 install -r requirements.txt
 
 
 # For GCP TPU XLA lib support
