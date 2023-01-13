@@ -157,7 +157,7 @@ class DonutModelPLModule(pl.LightningModule):
         def train_dataloader(self):
             # create corresponding PyTorch dataloaders
             train_dataloader = DataLoader(
-                train_dataset, batch_size=1, shuffle=True, num_workers=4)
+                self.train_dataset, batch_size=1, shuffle=True, num_workers=4)
             # Let's verify a batch:
             batch = next(iter(self.train_dataloader))
             verify_batch(processor=processor, batch=batch)
@@ -165,5 +165,5 @@ class DonutModelPLModule(pl.LightningModule):
 
         def val_dataloader(self):
             val_dataloader = DataLoader(
-                val_dataset, batch_size=1, shuffle=False, num_workers=4)
+                self.val_dataset, batch_size=1, shuffle=False, num_workers=4)
             return val_dataloader

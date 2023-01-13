@@ -19,7 +19,9 @@ set -x
 
 virtualenv -p python3.8 .
 source ./bin/activate
+pip config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
 pip install -r requirements.txt
+
 
 # For GCP TPU XLA lib support
 # wget -qO - https://apt.repos.neuron.amazonaws.com/GPG-PUB-KEY-AMAZON-AWS-NEURON.PUB | sudo apt-key add -
