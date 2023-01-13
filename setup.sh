@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright 2022 Ivelin Ivanov and Guardian UI LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
 set -e
 set -x
 
@@ -24,9 +25,3 @@ git pull
 git config --global credential.helper "cache --timeout=3600"
 wandb login
 huggingface-cli login
-
-
-# See docs for accelerator and devices params you should be using
-# Defaults to v2-8 Google TPUs:
-# https://pytorch-lightning.readthedocs.io/en/stable/notebooks/lightning_examples/mnist-tpu-training.html
-python -m ui_refexp.train --accelerator='tpu' --devices=8

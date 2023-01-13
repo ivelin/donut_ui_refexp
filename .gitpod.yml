@@ -1,0 +1,17 @@
+
+tasks:
+  - name: UI RefExp on GCP TPU
+    init: |
+      # Setup gcloud cli
+      # https://cloud.google.com/sdk/docs/install#deb
+      sudo apt-get install apt-transport-https ca-certificates gnupg
+      echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+      curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+      sudo apt-get update && sudo apt-get install google-cloud-cli
+      gcloud init
+    command: |
+      # ssh to GCP TPU
+      # https://cloud.google.com/tpu/docs/run-calculation-pytorch
+      gcloud auth login
+      gcloud config set account guardianui-374519
+      gcloud compute tpus tpu-vm ssh tpu-node-us-central-1f --zone us-central1-f
