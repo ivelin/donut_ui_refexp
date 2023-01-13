@@ -13,6 +13,7 @@ from datasets import load_dataset
 from ui_refexp.donut_dataset import DonutDataset
 from ui_refexp.donut_model import DonutModelPLModule
 import pytorch_lightning as pl
+import os
 
 REFEXP_DATASET_NAME = "ivelin/ui_refexp_saved"
 # Pick which pretrained checkpoint to start the fine tuning process from
@@ -227,6 +228,9 @@ def run_training():
 
 
 if __name__ == "__main__":
+    # printing environment variables
+    print(os.environ)
+
     # Initialize command line arg parser
     parser = argparse.ArgumentParser(description='Trainer for Donut UI RefExp task.',
                                      prog='Donut UI RefExp Trainer', usage='%(prog)s [options]')

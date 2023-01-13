@@ -6,4 +6,3 @@ wandb
 Pillow
 torch
 torch_xla[tpuvm]
-neuron
