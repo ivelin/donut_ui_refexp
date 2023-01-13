@@ -2,6 +2,9 @@
 
 # Make sure to run setup.sh first!
 
+virtualenv -p python3.8 .
+source ./bin/activate
+
 # See docs for accelerator and devices params you should be using
 # Defaults to v2-8 Google TPUs:
 # https://cloud.google.com/tpu/docs/pytorch-xla-ug-tpu-vm
@@ -9,4 +12,4 @@
 export XRT_TPU_CONFIG="localservice;0;localhost:51011"
 
 
-python -m ui_refexp.train --accelerator='tpu' --devices=8
+python3 -m ui_refexp.train --accelerator='tpu' --devices=8
