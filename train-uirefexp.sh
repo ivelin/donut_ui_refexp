@@ -21,8 +21,12 @@ source ./bin/activate
 pip install -r requirements.txt
 
 git pull
-git config --global credential.helper store
+git config --global credential.helper "cache --timeout=3600"
 wandb login
 huggingface-cli login
 
-python -m ui_refexp.train
+
+# See docs for accelerator and devices params you should be using
+# Defaults to v2-8 Google TPUs:
+# https://pytorch-lightning.readthedocs.io/en/stable/notebooks/lightning_examples/mnist-tpu-training.html
+python -m ui_refexp.train --accelerator='tpu' --devices=8

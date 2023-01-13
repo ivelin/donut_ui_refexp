@@ -4,6 +4,7 @@ from typing import Any, List, Tuple
 
 import torch
 from torch.utils.data import Dataset
+from datasets import load_dataset
 
 added_tokens = []
 
@@ -33,8 +34,11 @@ class DonutDataset(Dataset):
         task_start_token: str = "<s>",
         prompt_end_token: str = None,
         sort_json_key: bool = True,
+        processor=None
     ):
         super().__init__()
+
+        assert processor is not None
 
         self.max_length = max_length
         self.split = split
@@ -44,6 +48,7 @@ class DonutDataset(Dataset):
         self.sort_json_key = sort_json_key
 
         self.dataset = load_dataset(dataset_name_or_path, split=self.split)
+        self.processor = processor
 
         self.gt_token_sequences = []
         if range_samples is not None:
@@ -71,7 +76,8 @@ class DonutDataset(Dataset):
             ) + processor.tokenizer.eos_token
             self.gt_token_sequences.append(j2t)
 
-        self.add_tokens([self.task_start_token, self.prompt_end_token])
+        self.add_tokens([
+                        self.task_start_token, self.prompt_end_token])
         self.prompt_end_token_id = processor.tokenizer.convert_tokens_to_ids(
             self.prompt_end_token)
 
@@ -90,7 +96,8 @@ class DonutDataset(Dataset):
                     keys = obj.keys()
                 for k in keys:
                     if update_special_tokens_for_json_key:
-                        self.add_tokens([fr"<s_{k}>", fr"</s_{k}>"])
+                        self.add_tokens([
+                                        fr"<s_{k}>", fr"</s_{k}>"])
                     output += (
                         fr"<s_{k}>"
                         + self.json2token(obj[k], update_special_tokens_for_json_key, sort_json_key)
@@ -108,13 +115,14 @@ class DonutDataset(Dataset):
                 obj = f"<{obj}/>"  # for categorical special tokens
             return obj
 
-    def add_tokens(self, list_of_tokens: List[str]):
+    def add_tokens(self, list_of_tokens: List[str] = None):
         """
         Add special tokens to tokenizer and resize the token embeddings of the decoder
         """
-        newly_added_num = processor.tokenizer.add_tokens(list_of_tokens)
+        newly_added_num = self.processor.tokenizer.add_tokens(list_of_tokens)
         if newly_added_num > 0:
-            model.decoder.resize_token_embeddings(len(processor.tokenizer))
+            model.decoder.resize_token_embeddings(
+                len(self.processor.tokenizer))
             added_tokens.extend(list_of_tokens)
 
     def __len__(self) -> int:
@@ -132,13 +140,13 @@ class DonutDataset(Dataset):
         sample = self.dataset[idx]
 
         # input_tensor
-        pixel_values = processor(sample["image"].convert(
+        pixel_values = self.processor(sample["image"].convert(
             "RGB"), random_padding=self.split == "train", return_tensors="pt").pixel_values
         input_tensor = pixel_values.squeeze()
 
         # input_ids
         processed_parse = self.gt_token_sequences[idx]
-        input_ids = processor.tokenizer(
+        input_ids = self.processor.tokenizer(
             processed_parse,
             add_special_tokens=False,
             max_length=self.max_length,
@@ -153,7 +161,7 @@ class DonutDataset(Dataset):
         if self.split == "train":
             labels = input_ids.clone()
             labels[
-                labels == processor.tokenizer.pad_token_id
+                labels == self.processor.tokenizer.pad_token_id
             ] = self.ignore_id  # model doesn't need to predict pad token
             labels[
                 : torch.nonzero(labels == self.prompt_end_token_id).sum() + 1

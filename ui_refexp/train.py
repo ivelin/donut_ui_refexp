@@ -1,3 +1,4 @@
+import argparse
 from transformers import DonutProcessor, VisionEncoderDecoderModel
 from pytorch_lightning.loggers import WandbLogger
 import wandb
@@ -8,8 +9,10 @@ from transformers import VisionEncoderDecoderConfig
 from PIL import Image, ImageDraw
 import json
 import math
-import ui_refexp.donut_dataset
 from datasets import load_dataset
+from ui_refexp.donut_dataset import DonutDataset
+from ui_refexp.donut_model import DonutModelPLModule
+import pytorch_lightning as pl
 
 REFEXP_DATASET_NAME = "ivelin/ui_refexp_saved"
 # Pick which pretrained checkpoint to start the fine tuning process from
@@ -47,7 +50,7 @@ def show_preprocessed_sample(sample):
         f"to image pixel values: xmin, ymin, xmax, ymax: {xmin, ymin, xmax, ymax}")
 
 
-def show_processed_train_sample(sample):
+def show_processed_train_sample(processor=None, sample=None):
     pixel_values, decoder_input_ids, labels = sample
     print(pixel_values.shape)
     for decoder_input_id, label in zip(decoder_input_ids.tolist()[:-1], labels.tolist()[1:]):
@@ -94,7 +97,7 @@ def add_tokens(processor=None, list_of_tokens: List[str] = None):
         model.decoder.resize_token_embeddings(len(processor.tokenizer))
 
 
-def verify_batch(batch):
+def verify_batch(processor=None, batch=None):
     pixel_values, decoder_input_ids, labels = batch
     print(f"pixel_values.shape: {pixel_values.shape}")
     print(f"decoder_input_ids.shape: {decoder_input_ids.shape}")
@@ -148,13 +151,13 @@ def run_training():
     processor.feature_extractor.do_align_long_axis = False
 
     # For warm up phase, consider picking only a small subset to see if the model converges on the data
-    # max_train_samples = 1000
+    max_train_samples = 500
     # pick a range for sampling
-    # range_train_samples = range(4000, 4000+max_train_samples)
+    range_train_samples = range(max_train_samples)
 
-    train_dataset = DonutDataset(REFEXP_DATASET_NAME, max_length=DECODER_MAX_SEQ_LENGTH,  # range_samples=range_train_samples,
+    train_dataset = DonutDataset(REFEXP_DATASET_NAME, max_length=DECODER_MAX_SEQ_LENGTH,  range_samples=range_train_samples,
                                  split="train", task_start_token="<s_refexp>", prompt_end_token="<s_target_bounding_box>",
-                                 sort_json_key=False,
+                                 sort_json_key=False, processor=processor
                                  )
 
     # pick a small subset for initial val set to see if validation metrics improve
@@ -163,10 +166,12 @@ def run_training():
 
     val_dataset = DonutDataset(REFEXP_DATASET_NAME, max_length=DECODER_MAX_SEQ_LENGTH,  # range_samples=range_val_samples,
                                split="validation", task_start_token="<s_refexp>", prompt_end_token="<s_target_bounding_box>",
-                               sort_json_key=False,
+                               sort_json_key=False, processor=processor
                                )
+
     # show a sample of the processed dataset
-    show_processed_train_sample(sample)
+    sample = train_dataset[0]
+    show_processed_train_sample(processor=processor, sample=sample)
 
     print(f"train dataset length: {train_dataset.dataset_length}")
     print(f"validation dataset length: {val_dataset.dataset_length}")
@@ -179,13 +184,13 @@ def run_training():
 
     # Let's verify a batch:
     batch = next(iter(train_dataloader))
-    verify_batch(batch)
+    verify_batch(processor=processor, batch=batch)
 
     # clear any previously open wandb logging session
     wandb.finish()
 
     # initiate PyTorch Lightning module
-    config = {"max_epochs": 5,  # 30,
+    config = {"max_epochs": 1,  # 30,
               "val_check_interval": 0.2,  # how many times we want to validate during an epoch
               "check_val_every_n_epoch": 1,
               "gradient_clip_val": 1.0,
@@ -222,4 +227,24 @@ def run_training():
 
 
 if __name__ == "__main__":
+    # Initialize command line arg parser
+    parser = argparse.ArgumentParser(description='Trainer for Donut UI RefExp task.',
+                                     prog='Donut UI RefExp Trainer', usage='%(prog)s [options]')
+
+    # Adding optional argument
+    parser.add_argument("-a", "--accelerator",  type=str, required=True,
+                        help="Set accelerator type for the hardware architecture for the training: cpu, gpu, tpu ")
+
+    # Adding optional argument
+    parser.add_argument("-d", "--devices", type=int, required=True,
+                        help="Set to number of available devices or cores.")
+
+    # Read arguments from command line
+    args = parser.parse_args()
+
+    assert args.accelerator
+    print(f"Accelerator set to: {args.accelerator}")
+    assert args.devices
+    print(f"Devices set to: {args.devices}")
+
     run_training()
