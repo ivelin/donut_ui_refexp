@@ -48,7 +48,7 @@ class DonutModelPLModule(pl.LightningModule):
             val_dataset, batch_size=1, shuffle=False, num_workers=4)
 
         # Let's verify a batch:
-        batch = next(iter(train_dataloader))
+        batch = next(iter(self.train_dataloader))
         verify_batch(processor=processor, batch=batch)
 
     def training_step(self, batch, batch_idx):
