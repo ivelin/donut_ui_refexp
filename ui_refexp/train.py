@@ -224,7 +224,8 @@ def run_training():
     trainer.fit(model_module)
 
     # push checkpoint to Hugging Face Hub
-    push_to_hub(model_module)
+    # uncomment when training works on TPU
+    # TODO: push_to_hub(model_module)
 
 
 if __name__ == "__main__":
