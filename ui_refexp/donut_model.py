@@ -15,11 +15,13 @@ from pytorch_lightning.utilities import rank_zero_only
 
 
 class DonutModelPLModule(pl.LightningModule):
-    def __init__(self, config, processor, model):
+    def __init__(self, config=None, processor=None, model=None, train_dataloader=None, val_dataloader=None):
         super().__init__()
         self.config = config
         self.processor = processor
         self.model = model
+        self.train_dataloader = train_dataloader
+        self.val_dataloader = val_dataloader
 
     def training_step(self, batch, batch_idx):
         pixel_values, decoder_input_ids, labels = batch
@@ -135,7 +137,7 @@ class DonutModelPLModule(pl.LightningModule):
             return optimizer
 
         def train_dataloader(self):
-            return train_dataloader
+            return self.train_dataloader
 
         def val_dataloader(self):
-            return val_dataloader
+            return self.val_dataloader
