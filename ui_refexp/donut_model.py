@@ -5,6 +5,7 @@ import math
 
 from torch.nn.utils.rnn import pad_sequence
 from torch.optim.lr_scheduler import LambdaLR
+from ui_refexp.iou import get_iou
 
 import pytorch_lightning as pl
 from pytorch_lightning.utilities import rank_zero_only

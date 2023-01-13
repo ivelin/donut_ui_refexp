@@ -8,8 +8,7 @@ from transformers import VisionEncoderDecoderConfig
 from PIL import Image, ImageDraw
 import json
 import math
-import iou
-import donut_dataset
+import ui_refexp.donut_dataset
 from datasets import load_dataset
 
 REFEXP_DATASET_NAME = "ivelin/ui_refexp_saved"
@@ -25,6 +24,11 @@ REFEXP_MODEL_CHECKPOINT = "ivelin/donut-refexp-draft-precision2decs"
 SAVE_NEW_CHECKPOINT_REPO = "ivelin/donut-refexp-draft-precision2decs"
 # Repo to keep a backup in case the primary gets currupted during save.
 BACKUP_REPO_NAME = "ivelin/donut-refexp-draft-precision2decs-backup"
+
+# Normalized image size for encoder pixel input
+ENCODER_IMAGE_SIZE = [1280, 960]
+# Max sequence for decoder in number of tokens, including prompt and answer.
+DECODER_MAX_SEQ_LENGTH = 128
 
 
 def show_preprocessed_sample(sample):
@@ -63,8 +67,8 @@ def show_processed_val_sample(sample):
 
 def load_model():
     pretrained_repo_name = REFEXP_MODEL_CHECKPOINT
-    max_length = 128
-    image_size = [1280, 960]
+    max_length = DECODER_MAX_SEQ_LENGTH
+    image_size = ENCODER_IMAGE_SIZE
     # update image_size of the encoder
     # during pre-training, a larger image size was used
     config = VisionEncoderDecoderConfig.from_pretrained(pretrained_repo_name)
@@ -81,7 +85,7 @@ def load_model():
     return (config, processor, model)
 
 
-def add_tokens(list_of_tokens: List[str]):
+def add_tokens(processor=None, list_of_tokens: List[str] = None):
     """
     Add tokens to tokenizer and resize the token embeddings
     """
@@ -122,7 +126,7 @@ def push_to_hub(model_module):
     model_module.model.push_to_hub(backup_repo_name)
 
 
-def main(_):
+def run_training():
     """The main function."""
     dataset = load_dataset(REFEXP_DATASET_NAME)
     print(dataset['train'].info)
@@ -135,12 +139,12 @@ def main(_):
 
     # TODO: Do we need this for UI RefExp? It came from the DocVQA code
     additional_tokens = ["<yes/>", "<no/>"]
-    add_tokens(additional_tokens)
+    add_tokens(processor=processor, list_of_tokens=additional_tokens)
 
     # we update some settings which differ from pretraining; namely the size of the images + no rotation required
     # source: https://github.com/clovaai/donut/blob/master/config/train_cord.yaml
     # should be (width, height)
-    processor.feature_extractor.size = image_size[::-1]
+    processor.feature_extractor.size = ENCODER_IMAGE_SIZE[::-1]
     processor.feature_extractor.do_align_long_axis = False
 
     # For warm up phase, consider picking only a small subset to see if the model converges on the data
@@ -148,7 +152,7 @@ def main(_):
     # pick a range for sampling
     # range_train_samples = range(4000, 4000+max_train_samples)
 
-    train_dataset = DonutDataset(REFEXP_DATASET_NAME, max_length=max_length,  # range_samples=range_train_samples,
+    train_dataset = DonutDataset(REFEXP_DATASET_NAME, max_length=DECODER_MAX_SEQ_LENGTH,  # range_samples=range_train_samples,
                                  split="train", task_start_token="<s_refexp>", prompt_end_token="<s_target_bounding_box>",
                                  sort_json_key=False,
                                  )
@@ -157,7 +161,7 @@ def main(_):
     # max_val_samples = 200
     # range_val_samples = range(max_val_samples)
 
-    val_dataset = DonutDataset(REFEXP_DATASET_NAME, max_length=max_length,  # range_samples=range_val_samples,
+    val_dataset = DonutDataset(REFEXP_DATASET_NAME, max_length=DECODER_MAX_SEQ_LENGTH,  # range_samples=range_val_samples,
                                split="validation", task_start_token="<s_refexp>", prompt_end_token="<s_target_bounding_box>",
                                sort_json_key=False,
                                )
@@ -218,5 +222,4 @@ def main(_):
 
 
 if __name__ == "__main__":
-
-    main()
+    run_training()

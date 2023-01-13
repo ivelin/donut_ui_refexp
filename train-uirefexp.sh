@@ -16,8 +16,8 @@
 set -e
 set -x
 
-virtualenv -p python3.8 .
-source ./bin/activate
+# virtualenv -p python3.8 .
+# source ./bin/activate
 pip install -r requirements.txt
 
 git pull
