@@ -20,6 +20,7 @@ virtualenv -p python3.8 .
 source ./bin/activate
 pip install -r requirements.txt
 
+git pull
 git config --global credential.helper store
 wandb login
 huggingface-cli login
