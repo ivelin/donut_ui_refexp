@@ -14,19 +14,40 @@ from pytorch_lightning.utilities import rank_zero_only
 # from nltk import edit_distance
 
 
+def verify_batch(processor=None, batch=None):
+    pixel_values, decoder_input_ids, labels = batch
+    print(f"pixel_values.shape: {pixel_values.shape}")
+    print(f"decoder_input_ids.shape: {decoder_input_ids.shape}")
+    for decoder_input_id, label in zip(decoder_input_ids[0].tolist()[:-1][:50], labels[0].tolist()[1:][:50]):
+        if label != -100:
+            print(processor.decode([decoder_input_id]),
+                  processor.decode([label]))
+        else:
+            print(processor.decode([decoder_input_id]), label)
+
 class DonutModelPLModule(pl.LightningModule):
-    def __init__(self, config=None, processor=None, model=None, train_dataloader=None, val_dataloader=None):
+    def __init__(self, config=None, processor=None, model=None, train_dataset=None, val_dataset=None):
         super().__init__()
         assert config is not None
         assert processor is not None
         assert model is not None
-        assert train_dataloader is not None
-        assert val_dataloader is not None
+        assert train_dataset is not None
+        assert val_dataset is not None
         self.config = config
         self.processor = processor
         self.model = model
-        self.train_dataloader = train_dataloader
-        self.val_dataloader = val_dataloader
+        self.train_dataset = train_dataset
+        self.val_dataset = val_dataset
+
+        # create corresponding PyTorch dataloaders
+        self.train_dataloader = DataLoader(
+            train_dataset, batch_size=1, shuffle=True, num_workers=4)
+        self.val_dataloader = DataLoader(
+            val_dataset, batch_size=1, shuffle=False, num_workers=4)
+
+        # Let's verify a batch:
+        batch = next(iter(train_dataloader))
+        verify_batch(processor=processor, batch=batch)
 
     def training_step(self, batch, batch_idx):
         pixel_values, decoder_input_ids, labels = batch

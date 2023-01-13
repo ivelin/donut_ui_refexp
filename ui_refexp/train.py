@@ -177,16 +177,6 @@ def run_training():
     print(f"train dataset length: {train_dataset.dataset_length}")
     print(f"validation dataset length: {val_dataset.dataset_length}")
 
-    # create corresponding PyTorch dataloaders
-    train_dataloader = DataLoader(
-        train_dataset, batch_size=1, shuffle=True, num_workers=4)
-    val_dataloader = DataLoader(
-        val_dataset, batch_size=1, shuffle=False, num_workers=4)
-
-    # Let's verify a batch:
-    batch = next(iter(train_dataloader))
-    verify_batch(processor=processor, batch=batch)
-
     # clear any previously open wandb logging session
     wandb.finish()
 
@@ -206,7 +196,7 @@ def run_training():
               "verbose": True,
               }
     model_module = DonutModelPLModule(
-        config=config, processor=processor, model=model, train_dataloader=train_dataloader, val_dataloader=val_dataloader)
+        config=config, processor=processor, model=model, train_dataset=train_dataset, val_dataset=val_dataset)
     wandb_logger = WandbLogger(project="Donut-RefExp")
     # initialize trainer
     trainer = pl.Trainer(
