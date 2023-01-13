@@ -17,7 +17,7 @@
 set -e
 set -x
 
-virtualenv -p python3.8 .
+virtualenv -p python3.8 venv
 source ./bin/activate
 pip config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
 pip install -r requirements.txt
