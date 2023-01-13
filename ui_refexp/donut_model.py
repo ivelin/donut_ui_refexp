@@ -41,16 +41,6 @@ class DonutModelPLModule(pl.LightningModule):
         self.train_dataset = train_dataset
         self.val_dataset = val_dataset
 
-        # create corresponding PyTorch dataloaders
-        self.train_dataloader = DataLoader(
-            train_dataset, batch_size=1, shuffle=True, num_workers=4)
-        self.val_dataloader = DataLoader(
-            val_dataset, batch_size=1, shuffle=False, num_workers=4)
-
-        # Let's verify a batch:
-        batch = next(iter(self.train_dataloader))
-        verify_batch(processor=processor, batch=batch)
-
     def training_step(self, batch, batch_idx):
         pixel_values, decoder_input_ids, labels = batch
 
@@ -165,7 +155,15 @@ class DonutModelPLModule(pl.LightningModule):
             return optimizer
 
         def train_dataloader(self):
-            return self.train_dataloader
+            # create corresponding PyTorch dataloaders
+            train_dataloader = DataLoader(
+                train_dataset, batch_size=1, shuffle=True, num_workers=4)
+            # Let's verify a batch:
+            batch = next(iter(self.train_dataloader))
+            verify_batch(processor=processor, batch=batch)
+            return train_dataloader
 
         def val_dataloader(self):
-            return self.val_dataloader
+            val_dataloader = DataLoader(
+                val_dataset, batch_size=1, shuffle=False, num_workers=4)
+            return val_dataloader
