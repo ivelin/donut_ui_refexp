@@ -17,8 +17,8 @@
 set -e
 set -x
 
-virtualenv -p python3.8 venv
-source ./venv/bin/activate
+# virtualenv -p python3.8 venv
+# source ./venv/bin/activate
 # pip3 config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
 pip3 install -r requirements.txt
 
@@ -26,7 +26,7 @@ pip3 install -r requirements.txt
 # For GCP TPU XLA lib support
 # wget -qO - https://apt.repos.neuron.amazonaws.com/GPG-PUB-KEY-AMAZON-AWS-NEURON.PUB | sudo apt-key add -
 
-git pull
+# git pull
 git config --global credential.helper "cache --timeout=3600"
-wandb login
-huggingface-cli login
+# wandb login
+# huggingface-cli login
