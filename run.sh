@@ -1,9 +1,19 @@
 #!/bin/bash
 
+
+# Check TPU readiness
+# https://cloud.google.com/tpu/docs/users-guide-tpu-vm
+gcloud compute tpus tpu-vm list --zone=us-central1-f
+gcloud compute tpus tpu-vm describe  tpu-node-us-central-1f \
+  --zone=us-central1-f
+
+# https://cloud.google.com/tpu/docs/supported-tpu-configurations#pytorch
+
+
 # Make sure to run setup.sh first!
 
-virtualenv -p python3.8 .
-source ./bin/activate venv
+virtualenv -p python3.8 venv
+source ./venv/bin/activate
 
 # See docs for accelerator and devices params you should be using
 # Defaults to v2-8 Google TPUs:

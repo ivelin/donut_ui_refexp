@@ -15,3 +15,7 @@ tasks:
       gcloud auth login
       gcloud config set account guardianui-374519
       gcloud compute tpus tpu-vm ssh tpu-node-us-central-1f --zone us-central1-f
+      # show current gcp acces account
+      gcloud auth list
+      # list TPU resources
+      gcloud compute tpus tpu-vm list --zone=us-central1-f

@@ -8,3 +8,4 @@ bin/
 .env
 pyvenv.cfg
 share/
+venv/
