@@ -86,7 +86,7 @@ def load_model():
     processor = DonutProcessor.from_pretrained(pretrained_repo_name)
     model = VisionEncoderDecoderModel.from_pretrained(
         pretrained_repo_name, config=config)
-    return (config, processor, model)
+    return config, processor, model
 
 
 def add_tokens(processor=None, list_of_tokens: List[str] = None):
@@ -139,7 +139,7 @@ def run_training():
     sample = dataset['train'][49]
     show_preprocessed_sample(sample)
     # load pre-trained model
-    (config, processor, model) = load_model()
+    config, processor, model = load_model()
 
     # TODO: Do we need this for UI RefExp? It came from the DocVQA code
     additional_tokens = ["<yes/>", "<no/>"]
@@ -205,8 +205,7 @@ def run_training():
               "result_path": "./result",
               "verbose": True,
               }
-    model_module = DonutModelPLModule(
-        config=config, processor=processor, model=model)
+    model_module = DonutModelPLModule(config, processor, model)
     wandb_logger = WandbLogger(project="Donut-RefExp")
     # initialize trainer
     trainer = pl.Trainer(

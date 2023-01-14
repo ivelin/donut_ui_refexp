@@ -3,7 +3,7 @@
 # Make sure to run setup.sh first!
 
 virtualenv -p python3.8 .
-source ./bin/activate
+source ./bin/activate venv
 
 # See docs for accelerator and devices params you should be using
 # Defaults to v2-8 Google TPUs:
@@ -13,4 +13,4 @@ export XRT_TPU_CONFIG="localservice;0;localhost:51011"
 export XLA_USE_BF16=1
 
 
-python3 -m ui_refexp.train --accelerator='cpu' --devices=8
+python3 -m ui_refexp.train --accelerator='cpu' --devices=1

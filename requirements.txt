@@ -4,7 +4,6 @@ datasets
 sentencepiece
 pytorch-lightning
 Pillow
-torch
 torch-neuron==1.11.0.2.3.0.0
 neuron-cc[tensorflow]
 protobuf
