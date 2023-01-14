@@ -15,6 +15,9 @@ gcloud compute tpus tpu-vm describe  tpu-node-us-central-1f \
 virtualenv -p python3.8 venv
 source ./venv/bin/activate
 
+# Restart TPU service
+# python3 -m torch_xla.core.xrt_run_server --port 51011 --restart
+
 # See docs for accelerator and devices params you should be using
 # Defaults to v2-8 Google TPUs:
 # https://cloud.google.com/tpu/docs/pytorch-xla-ug-tpu-vm

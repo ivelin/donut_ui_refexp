@@ -19,7 +19,7 @@ set -x
 
 virtualenv -p python3.8 venv
 source ./venv/bin/activate
-pip3 config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
+# pip3 config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
 pip3 install -r requirements.txt
 
 
