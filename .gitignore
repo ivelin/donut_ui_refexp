@@ -7,3 +7,4 @@ lib/
 bin/
 .env
 pyvenv.cfg
+share/
