@@ -4,6 +4,7 @@ datasets
 sentencepiece
 pytorch-lightning
 Pillow
+httplib2>=0.15.0
 # torch-neuron==1.11.0.2.3.0.0
 # neuron-cc[tensorflow]
 # protobuf
