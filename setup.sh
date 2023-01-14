@@ -28,5 +28,5 @@ pip3 install -r requirements.txt
 
 # git pull
 git config --global credential.helper "cache --timeout=3600"
-# wandb login
-# huggingface-cli login
+wandb login
+huggingface-cli login
