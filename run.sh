@@ -3,8 +3,8 @@
 
 # Check TPU readiness
 # https://cloud.google.com/tpu/docs/users-guide-tpu-vm
-gcloud compute tpus tpu-vm list --zone=us-central1-f
-gcloud compute tpus tpu-vm describe  tpu2-us-central1-f --zone=us-central1-f
+# gcloud compute tpus tpu-vm list --zone=us-central1-f
+# gcloud compute tpus tpu-vm describe  tpu2-us-central1-f --zone=us-central1-f
 
 # https://cloud.google.com/tpu/docs/supported-tpu-configurations#pytorch
 
