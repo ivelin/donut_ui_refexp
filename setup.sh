@@ -27,6 +27,7 @@ pip3 install -r requirements.txt
 # wget -qO - https://apt.repos.neuron.amazonaws.com/GPG-PUB-KEY-AMAZON-AWS-NEURON.PUB | sudo apt-key add -
 
 # git pull
-git config --global credential.helper "cache --timeout=3600"
-wandb login
-huggingface-cli login
+git config --global credential.helper store
+python3 -m wandb login
+# huggingface-cli login
+python3 -m huggingface_hub.commands.huggingface_cli login
