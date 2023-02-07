@@ -9,3 +9,6 @@ bin/
 pyvenv.cfg
 share/
 venv/
+.ipynb_checkpoints/
+saved_pretrained/
+saved_pretrained_backup/
